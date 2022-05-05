@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Mettre à jour la tâche</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="note">
+    <ion-item>
+      <ion-label position="stacked">Titre</ion-label>
+      <ion-input [(ngModel)]="note.title" required="true"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Contenu</ion-label>
+      <ion-input [(ngModel)]="note.text" required="true"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" color="success" (click)="updateNote()">
+      <ion-icon name="save" slot="start"></ion-icon>
+      Mettre à jour
+    </ion-button>
+
+    <ion-button expand="block" color="danger" (click)="deleteNote()">
+      <ion-icon name="trash" slot="start"></ion-icon>
+      Supprimer
+    </ion-button>
+
+  </div>
+</ion-content>

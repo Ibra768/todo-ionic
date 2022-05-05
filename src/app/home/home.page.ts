@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { DataService, Message } from '../services/data.service';
+import { DataService } from '../services/data.service';
+import {AlertController, ModalController} from "@ionic/angular";
+import {ModalPage} from "../modal/modal.page";
 
 @Component({
   selector: 'app-home',
@@ -7,16 +9,52 @@ import { DataService, Message } from '../services/data.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  constructor(private data: DataService) {}
-
-  refresh(ev) {
-    setTimeout(() => {
-      ev.detail.complete();
-    }, 3000);
+  notes = [];
+  constructor(private dataService: DataService, private alertCtrl: AlertController, private modalCtrl: ModalController) {
+    this.dataService.getNotes().subscribe(res => {
+      console.log(res);
+      this.notes = res;
+    })
   }
 
-  getMessages(): Message[] {
-    return this.data.getMessages();
+  async openNote(note){
+    const modal = await this.modalCtrl.create({
+      component: ModalPage,
+      componentProps: { id: note.id},
+      breakpoints: [0,0.5,0.8],
+      initialBreakpoint: 0.5
+    });
+    modal.present();
   }
 
+  async addNote(){
+    const alert = await this.alertCtrl.create({
+      header: 'Ajouter une tâche',
+      inputs: [
+        {
+          name: 'title',
+          placeholder: 'Titre de la tâche',
+          type: 'text'
+        },
+        {
+          name: 'text',
+          placeholder: 'Description',
+          type: 'textarea'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        },
+        {
+          text: 'Ajouter',
+          handler: (res) => {
+            this.dataService.addNote({title: res.title, text: res.text})
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
 }
